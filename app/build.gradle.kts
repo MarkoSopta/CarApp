@@ -45,13 +45,15 @@ android {
 }
 
 dependencies {
-implementation("androidx.fragment:fragment:1.8.5")
+    implementation("androidx.fragment:fragment:1.8.5")
     implementation("androidx.camera:camera-core:1.4.1")
     implementation("androidx.camera:camera-lifecycle:1.4.1")
     implementation("androidx.camera:camera-view:1.4.1")
-    implementation ("androidx.camera:camera-camera2:1.4.1")
+    implementation("androidx.camera:camera-camera2:1.4.1")
 
-
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.squareup.okhttp3:okhttp:4.9.0")
 
     implementation("com.google.android.engage:engage-core:1.5.5")
     implementation("com.google.firebase:firebase-auth:23.1.0")
