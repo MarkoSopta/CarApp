@@ -1,8 +1,14 @@
 package com.fsre.carapp.fragments;
 
+import android.content.Context;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Size;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -10,9 +16,13 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.camera.core.Camera;
+import androidx.camera.core.CameraControl;
 import androidx.camera.core.CameraSelector;
+import androidx.camera.core.FocusMeteringAction;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
+import androidx.camera.core.MeteringPoint;
+import androidx.camera.core.MeteringPointFactory;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
@@ -39,6 +49,8 @@ public class CameraFragment extends Fragment {
     private PreviewView previewView;
     private ProcessCameraProvider cameraProvider;
     private Camera camera;
+    private ScaleGestureDetector scaleGestureDetector;
+    private GestureDetector tapGestureDetector;
     private ImageOrientationService imageOrientationService;
 
     @Nullable
@@ -55,6 +67,15 @@ public class CameraFragment extends Fragment {
         startCamera();
 
         captureButton.setOnClickListener(v -> takePhoto());
+
+        scaleGestureDetector = new ScaleGestureDetector(requireContext(), new ScaleListener());
+        tapGestureDetector = new GestureDetector(requireContext(), new TapListener());
+
+        previewView.setOnTouchListener((v, event) -> {
+            scaleGestureDetector.onTouchEvent(event);
+            tapGestureDetector.onTouchEvent(event);
+            return true;
+        });
 
         return view;
     }
@@ -119,5 +140,32 @@ public class CameraFragment extends Fragment {
                 .replace(R.id.fragmentContainer, previewImageFragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            if (camera != null) {
+                float currentZoomRatio = camera.getCameraInfo().getZoomState().getValue().getZoomRatio();
+                float delta = detector.getScaleFactor();
+                camera.getCameraControl().setZoomRatio(currentZoomRatio * delta);
+            }
+            return true;
+        }
+    }
+
+    private class TapListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            if (camera != null) {
+                MeteringPointFactory factory = previewView.getMeteringPointFactory();
+                MeteringPoint point = factory.createPoint(e.getX(), e.getY());
+                FocusMeteringAction action = new FocusMeteringAction.Builder(point, FocusMeteringAction.FLAG_AF)
+                        .addPoint(point, FocusMeteringAction.FLAG_AE) // Optional: add AE metering
+                        .build();
+                camera.getCameraControl().startFocusAndMetering(action);
+            }
+            return true;
+        }
     }
 }

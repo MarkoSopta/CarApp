@@ -1,9 +1,12 @@
 package com.fsre.carapp;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -27,6 +30,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     private static final int REQUEST_CAMERA_PERMISSION = 100;
     public static final int REQUEST_STORAGE_PERMISSION = 101;
     private DrawerLayout drawerLayout;
+    private boolean doubleBackToExitPressedOnce = false;
+    private Handler handler = new Handler();
+
+    private static final String PREFS_NAME = "LoginPrefs";
+    private static final String KEY_LOGIN_TIMESTAMP = "loginTimestamp";
+    private static final long LOGIN_TIMEOUT = 5 * 60 * 1000; // 5 minutes in milliseconds
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,49 +50,60 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        checkLoginTimeout();
         checkAndRequestPermissions();
-    }
 
-    public void checkAndRequestPermissions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CAMERA_PERMISSION);
-        } else {
+        // Load CameraFragment by default
+        if (savedInstanceState == null) {
             loadFragment(new CameraFragment());
         }
     }
 
-    public void checkAndRequestStoragePermission() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkLoginTimeout();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        storeLoginTimestamp();
+    }
+
+    private void checkAndRequestPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+        }
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION);
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CAMERA_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                loadFragment(new CameraFragment());
-            } else {
-                handlePermissionDenial();
-            }
+    private void checkLoginTimeout() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        long loginTimestamp = prefs.getLong(KEY_LOGIN_TIMESTAMP, 0);
+        long currentTime = System.currentTimeMillis();
+
+        if (currentTime - loginTimestamp > LOGIN_TIMEOUT) {
+            signOut();
         }
     }
 
-    private void handlePermissionDenial() {
-        Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
+    private void storeLoginTimestamp() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putLong(KEY_LOGIN_TIMESTAMP, System.currentTimeMillis());
+        editor.apply();
+    }
+
+    private void signOut() {
+        FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
         finish();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
     }
 
     @Override
@@ -97,10 +117,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         } else if (item.getItemId() == R.id.nav_profile) {
             selectedFragment = new ProfileFragment();
         } else if (item.getItemId() == R.id.nav_logout) {
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
-            return true;
+            signOut();
         }
 
         if (selectedFragment != null) {
@@ -115,5 +132,22 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragmentContainer, fragment);
         transaction.commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            if (doubleBackToExitPressedOnce) {
+                super.onBackPressed();
+                return;
+            }
+
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
+
+            handler.postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
+        }
     }
 }

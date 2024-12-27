@@ -1,6 +1,8 @@
 package com.fsre.carapp.fragments;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,9 @@ public class LoginFragment extends Fragment {
     private EditText passwordEditText;
     private Button loginButton;
     private FirebaseAuth auth;
+
+    private static final String PREFS_NAME = "LoginPrefs";
+    private static final String KEY_LOGIN_TIMESTAMP = "loginTimestamp";
 
     @Nullable
     @Override
@@ -43,6 +48,7 @@ public class LoginFragment extends Fragment {
             auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
+                            storeLoginTimestamp();
                             Intent intent = new Intent(getActivity(), DashboardActivity.class);
                             startActivity(intent);
                             getActivity().finish();
@@ -53,5 +59,12 @@ public class LoginFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void storeLoginTimestamp() {
+        SharedPreferences preferences = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putLong(KEY_LOGIN_TIMESTAMP, System.currentTimeMillis());
+        editor.apply();
     }
 }
