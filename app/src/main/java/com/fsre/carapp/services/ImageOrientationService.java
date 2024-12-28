@@ -1,9 +1,11 @@
 package com.fsre.carapp.services;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+import android.net.Uri;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,5 +35,17 @@ public class ImageOrientationService {
                 return bitmap;
         }
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    public Bitmap correctOrientation(Context context, Bitmap bitmap, Uri imageUri) {
+        try {
+            ExifInterface exif = new ExifInterface(context.getContentResolver().openFileDescriptor(imageUri, "r").getFileDescriptor());
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
+            return rotateBitmap(bitmap, orientation);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return bitmap;
+        }
+
     }
 }

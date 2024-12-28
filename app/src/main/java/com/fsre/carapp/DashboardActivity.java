@@ -134,20 +134,4 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         transaction.commit();
     }
 
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            if (doubleBackToExitPressedOnce) {
-                super.onBackPressed();
-                return;
-            }
-
-            this.doubleBackToExitPressedOnce = true;
-            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
-
-            handler.postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
-        }
-    }
 }

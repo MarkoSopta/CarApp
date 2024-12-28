@@ -1,42 +1,15 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F5F5F5">
 
     <ImageView
         android:id="@+id/previewImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitCenter"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:orientation="horizontal"
-        android:gravity="center">
-
-        <Button
-            android:id="@+id/chooseFromGalleryButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="Reupload"/>
-
-        <Button
-            android:id="@+id/sendButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="Send"/>
-
-        <Button
-            android:id="@+id/retakeButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="Retake"/>
-    </LinearLayout>
+        android:scaleType="fitCenter"
+        android:background="#E0E0E0" />
 
     <TextView
         android:id="@+id/resultTextView"
@@ -45,5 +18,52 @@
         android:layout_gravity="top|center"
         android:layout_margin="16dp"
         android:text="Result"
+        android:textColor="#FFFFFF"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="12dp"
         android:visibility="gone"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="16dp"
+        android:background="#FFFFFF"
+        android:elevation="4dp">
+
+        <ImageButton
+            android:id="@+id/chooseFromGalleryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@drawable/ripple_button"
+            android:src="@drawable/ic_gallery"
+            android:contentDescription="Reupload"
+            android:padding="12dp" />
+
+
+        <ImageButton
+            android:id="@+id/sendButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@drawable/ripple_button"
+            android:src="@drawable/ic_identify"
+            android:contentDescription="Identify"
+            android:padding="12dp" />
+
+        <ImageButton
+            android:id="@+id/retakeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@drawable/ripple_button"
+            android:src="@drawable/ic_camera"
+            android:contentDescription="Retake"
+            android:padding="12dp" />
+
+
+    </LinearLayout>
 </FrameLayout>

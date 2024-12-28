@@ -1,0 +1,4 @@
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#3B7BC1"> <!-- Slightly darker blue ripple -->
+    <item android:drawable="@drawable/rounded_button" />
+</ripple>

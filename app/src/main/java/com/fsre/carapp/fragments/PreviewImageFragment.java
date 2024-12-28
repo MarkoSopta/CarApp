@@ -2,13 +2,11 @@ package com.fsre.carapp.fragments;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,7 +27,7 @@ public class PreviewImageFragment extends Fragment {
     private static final String TAG = "PreviewImageFragment";
 
     private ImageView previewImageView;
-    private Button retakeButton, sendButton, chooseFromGalleryButton;
+    private ImageButton retakeButton, sendButton, chooseFromGalleryButton;
     private TextView resultTextView;
     private Bitmap previewBitmap;
     private File imageFile;
@@ -85,7 +83,7 @@ public class PreviewImageFragment extends Fragment {
         apiService.uploadImage(imageFile, new ApiService.ApiCallback() {
             @Override
             public void onSuccess(ApiResponse response) {
-                new Handler(Looper.getMainLooper()).post(() -> displayResult(response.getResult()));
+                displayResult(response.getResult());
             }
 
             @Override
