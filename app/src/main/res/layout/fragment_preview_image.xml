@@ -8,8 +8,8 @@
         android:id="@+id/previewImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitCenter"
-        android:background="#E0E0E0" />
+        android:background="#4A5E65"
+        android:scaleType="fitCenter" />
 
     <TextView
         android:id="@+id/resultTextView"
@@ -27,11 +27,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:orientation="horizontal"
+        android:background="#1B1B21"
+        android:elevation="4dp"
         android:gravity="center"
-        android:padding="16dp"
-        android:background="#FFFFFF"
-        android:elevation="4dp">
+        android:orientation="horizontal"
+        android:padding="16dp">
 
         <ImageButton
             android:id="@+id/chooseFromGalleryButton"
@@ -39,9 +39,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:background="@drawable/ripple_button"
-            android:src="@drawable/ic_gallery"
             android:contentDescription="Reupload"
-            android:padding="12dp" />
+            android:padding="12dp"
+            android:src="@drawable/ic_gallery" />
 
 
         <ImageButton
@@ -50,9 +50,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:background="@drawable/ripple_button"
-            android:src="@drawable/ic_identify"
             android:contentDescription="Identify"
-            android:padding="12dp" />
+            android:padding="12dp"
+            android:src="@drawable/ic_identify" />
 
         <ImageButton
             android:id="@+id/retakeButton"
@@ -60,9 +60,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:background="@drawable/ripple_button"
-            android:src="@drawable/ic_camera"
             android:contentDescription="Retake"
-            android:padding="12dp" />
+            android:padding="12dp"
+            android:src="@drawable/ic_camera" />
 
 
     </LinearLayout>
