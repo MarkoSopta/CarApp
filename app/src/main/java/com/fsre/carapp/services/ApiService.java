@@ -50,7 +50,7 @@ public class ApiService {
         try {
             // Step 1: Resize the image before compression
             Bitmap originalBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-            Bitmap resizedBitmap = resizeImage(originalBitmap, 1280, 720); // Resize to 1280x720 or desired dimensions
+            Bitmap resizedBitmap = resizeImage(originalBitmap, 224, 224); // Resize to 1280x720 or desired dimensions
 
             // Step 2: Compress the resized image
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

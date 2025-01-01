@@ -1,41 +1,33 @@
 package com.fsre.carapp;
 
-import android.Manifest;
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
+import android.provider.MediaStore;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.database.Cursor;
+import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.FragmentManager;
 
 import com.fsre.carapp.fragments.CameraFragment;
-import com.fsre.carapp.fragments.GalleryFragment;
+import com.fsre.carapp.fragments.CropFragment;
+import com.fsre.carapp.fragments.DashboardFragment;
 import com.fsre.carapp.fragments.ProfileFragment;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
 
-public class DashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private static final int REQUEST_CAMERA_PERMISSION = 100;
-    public static final int REQUEST_STORAGE_PERMISSION = 101;
+public class DashboardActivity extends AppCompatActivity {
+
+    private static final int PICK_IMAGE = 1;
     private DrawerLayout drawerLayout;
-    private boolean doubleBackToExitPressedOnce = false;
-    private Handler handler = new Handler();
-
-    private static final String PREFS_NAME = "LoginPrefs";
-    private static final String KEY_LOGIN_TIMESTAMP = "loginTimestamp";
-    private static final long LOGIN_TIMEOUT = 5 * 60 * 1000; // 5 minutes in milliseconds
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,95 +35,95 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         setContentView(R.layout.activity_dashboard);
 
         drawerLayout = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        navigationView = findViewById(R.id.nav_view);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment selectedFragment = null;
+                int id = item.getItemId();
 
-        checkLoginTimeout();
-        checkAndRequestPermissions();
+                if (id == R.id.nav_profile) {
+                    selectedFragment = new ProfileFragment();
+                } else if (id == R.id.nav_logout) {
+                    signOut();
+                } else if (id == R.id.nav_dashboard) {
+                    selectedFragment = new DashboardFragment();
+                }
 
-        // Load CameraFragment by default
-        if (savedInstanceState == null) {
-            loadFragment(new CameraFragment());
+                if (selectedFragment != null) {
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragmentContainer, selectedFragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
+
+                drawerLayout.closeDrawers();
+                return true;
+            }
+        });
+
+        checkAndLoadDefaultFragment();
+    }
+
+    private void checkAndLoadDefaultFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (fragmentManager.getFragments().isEmpty()) {
+            findViewById(R.id.fragmentContainer).setVisibility(View.VISIBLE);
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainer, new DashboardFragment())
+                    .commit();
         }
+    }
+
+    public void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, PICK_IMAGE);
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        checkLoginTimeout();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        storeLoginTimestamp();
-    }
-
-    private void checkAndRequestPermissions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
-        }
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION);
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null) {
+            Uri imageUri = data.getData();
+            navigateToCropFragment(imageUri);
         }
     }
 
-    private void checkLoginTimeout() {
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        long loginTimestamp = prefs.getLong(KEY_LOGIN_TIMESTAMP, 0);
-        long currentTime = System.currentTimeMillis();
-
-        if (currentTime - loginTimestamp > LOGIN_TIMEOUT) {
-            signOut();
-        }
+    private void navigateToCropFragment(Uri imageUri) {
+        String imagePath = getRealPathFromURI(imageUri);
+        Bundle bundle = new Bundle();
+        bundle.putString("imagePath", imagePath);
+        CropFragment cropFragment = new CropFragment();
+        cropFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainer, cropFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
-    private void storeLoginTimestamp() {
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putLong(KEY_LOGIN_TIMESTAMP, System.currentTimeMillis());
-        editor.apply();
+    private String getRealPathFromURI(Uri contentUri) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
     }
 
     private void signOut() {
-        FirebaseAuth.getInstance().signOut();
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
+        new AlertDialog.Builder(this)
+                .setTitle("Sign Out")
+                .setMessage("Are you sure you want to sign out?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Fragment selectedFragment = null;
-
-        if (item.getItemId() == R.id.nav_camera) {
-            selectedFragment = new CameraFragment();
-        } else if (item.getItemId() == R.id.nav_gallery) {
-            selectedFragment = new GalleryFragment();
-        } else if (item.getItemId() == R.id.nav_profile) {
-            selectedFragment = new ProfileFragment();
-        } else if (item.getItemId() == R.id.nav_logout) {
-            signOut();
-        }
-
-        if (selectedFragment != null) {
-            loadFragment(selectedFragment);
-        }
-
-        drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    private void loadFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragmentContainer, fragment);
-        transaction.commit();
-    }
-
 }

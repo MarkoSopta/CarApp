@@ -2,6 +2,7 @@ package com.fsre.carapp.fragments;
 
 import android.content.Context;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Size;
@@ -57,32 +58,23 @@ public class CameraFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_camera, container, false);
-
         captureButton = view.findViewById(R.id.captureButton);
         previewView = view.findViewById(R.id.previewView);
-
-        executorService = Executors.newSingleThreadExecutor();
         imageOrientationService = new ImageOrientationService();
 
-        startCamera();
+        executorService = Executors.newSingleThreadExecutor();
+        scaleGestureDetector = new ScaleGestureDetector(getContext(), new ScaleListener());
+        tapGestureDetector = new GestureDetector(getContext(), new TapListener());
 
         captureButton.setOnClickListener(v -> takePhoto());
 
-        scaleGestureDetector = new ScaleGestureDetector(requireContext(), new ScaleListener());
-        tapGestureDetector = new GestureDetector(requireContext(), new TapListener());
-
-        previewView.setOnTouchListener((v, event) -> {
-            scaleGestureDetector.onTouchEvent(event);
-            tapGestureDetector.onTouchEvent(event);
-            return true;
-        });
+        startCamera();
 
         return view;
     }
 
     private void startCamera() {
-        ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext());
-
+        ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(getContext());
         cameraProviderFuture.addListener(() -> {
             try {
                 cameraProvider = cameraProviderFuture.get();
@@ -90,14 +82,18 @@ public class CameraFragment extends Fragment {
             } catch (ExecutionException | InterruptedException e) {
                 Log.e(TAG, "Error starting camera", e);
             }
-        }, ContextCompat.getMainExecutor(requireContext()));
+        }, ContextCompat.getMainExecutor(getContext()));
     }
 
     private void bindPreview(@NonNull ProcessCameraProvider cameraProvider) {
+        cameraProvider.unbindAll();
+
         Preview preview = new Preview.Builder().build();
         imageCapture = new ImageCapture.Builder().build();
 
-        CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
+        CameraSelector cameraSelector = new CameraSelector.Builder()
+                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                .build();
 
         preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
@@ -108,36 +104,35 @@ public class CameraFragment extends Fragment {
         if (imageCapture == null) return;
 
         tempImageFile = getTempImageFile();
-        ImageCapture.OutputFileOptions outputOptions = new ImageCapture.OutputFileOptions.Builder(tempImageFile).build();
 
-        imageCapture.takePicture(outputOptions, ContextCompat.getMainExecutor(requireContext()), new ImageCapture.OnImageSavedCallback() {
+        ImageCapture.OutputFileOptions outputOptions = new ImageCapture.OutputFileOptions.Builder(tempImageFile).build();
+        imageCapture.takePicture(outputOptions, executorService, new ImageCapture.OnImageSavedCallback() {
             @Override
             public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                navigateToPreviewImageFragment(tempImageFile.getAbsolutePath());
+                Uri imageUri = Uri.fromFile(tempImageFile);
+                navigateToCropFragment(imageUri);
             }
 
             @Override
             public void onError(@NonNull ImageCaptureException exception) {
-                Log.e(TAG, "Error capturing image", exception);
+                Log.e(TAG, "Photo capture failed: " + exception.getMessage(), exception);
             }
         });
     }
 
     private File getTempImageFile() {
-        File storageDir = requireContext().getExternalFilesDir(null);
-        if (storageDir != null && !storageDir.exists()) {
-            storageDir.mkdirs();
-        }
-        return new File(storageDir, "tempimg.jpg");
+        File storageDir = getContext().getCacheDir();
+        return new File(storageDir, "temp_image.jpg");
     }
 
-    private void navigateToPreviewImageFragment(String imagePath) {
+    private void navigateToCropFragment(Uri imageUri) {
+        String imagePath = imageUri.getPath();
         Bundle bundle = new Bundle();
         bundle.putString("imagePath", imagePath);
-        PreviewImageFragment previewImageFragment = new PreviewImageFragment();
-        previewImageFragment.setArguments(bundle);
+        CropFragment cropFragment = new CropFragment();
+        cropFragment.setArguments(bundle);
         getParentFragmentManager().beginTransaction()
-                .replace(R.id.fragmentContainer, previewImageFragment)
+                .replace(R.id.fragmentContainer, cropFragment)
                 .addToBackStack(null)
                 .commit();
     }

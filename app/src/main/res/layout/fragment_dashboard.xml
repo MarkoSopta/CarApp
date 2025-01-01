@@ -1,0 +1,33 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/uploadImageButton"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="Upload an Image"
+            android:background="@drawable/ripple_button"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/captureButton"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="Capture an Image"
+            android:background="@drawable/ripple_button"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+</FrameLayout>

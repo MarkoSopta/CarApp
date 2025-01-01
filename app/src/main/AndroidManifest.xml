@@ -37,6 +37,7 @@
             android:exported="false" />
         <activity
             android:name=".DashboardActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".fragments.RegisterFragment"
@@ -46,6 +47,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
