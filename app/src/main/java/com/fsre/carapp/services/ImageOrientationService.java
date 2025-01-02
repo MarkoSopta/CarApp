@@ -5,44 +5,45 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 
-import androidx.annotation.NonNull;
-
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class ImageOrientationService {
 
-    public Bitmap rotateBitmap(File imageFile) {
-        Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+    public File correctImageOrientation(File imageFile) {
         try {
             ExifInterface exif = new ExifInterface(imageFile.getAbsolutePath());
             int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-            Matrix matrix = getMatrix(orientation);
-            return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+            Bitmap rotatedBitmap = rotateBitmap(bitmap, orientation);
+
+            FileOutputStream out = new FileOutputStream(imageFile);
+            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.close();
+
+            return imageFile;
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
-        return bitmap;
     }
 
-    @NonNull
-    private static Matrix getMatrix(int orientation) {
-        int rotationAngle = 0;
+    private Bitmap rotateBitmap(Bitmap bitmap, int orientation) {
+        Matrix matrix = new Matrix();
         switch (orientation) {
             case ExifInterface.ORIENTATION_ROTATE_90:
-                rotationAngle = 90;
+                matrix.postRotate(90);
                 break;
             case ExifInterface.ORIENTATION_ROTATE_180:
-                rotationAngle = 180;
+                matrix.postRotate(180);
                 break;
             case ExifInterface.ORIENTATION_ROTATE_270:
-                rotationAngle = 270;
+                matrix.postRotate(270);
                 break;
             default:
-                break;
+                return bitmap;
         }
-        Matrix matrix = new Matrix();
-        matrix.postRotate(rotationAngle);
-        return matrix;
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 }
