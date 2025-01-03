@@ -22,7 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiService {
 
     // Correct base URL without trailing slash
-    private static final String BASE_URL = "https://141a-178-236-84-140.ngrok-free.app/predict/";
+    private static final String BASE_URL = "https://aiserver-k7yh.onrender.com/predict/";
     private ApiEndpoint apiEndpoint;
 
     public ApiService() {
