@@ -1,18 +1,23 @@
 package com.fsre.carapp;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.database.Cursor;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -23,7 +28,20 @@ import com.fsre.carapp.fragments.DashboardFragment;
 import com.fsre.carapp.fragments.ProfileFragment;
 import com.google.android.material.navigation.NavigationView;
 
+import org.jetbrains.annotations.NotNull;
+
 public class DashboardActivity extends AppCompatActivity {
+
+
+    private static final int PERMISSION_REQUEST_CODE = 100;
+    private static final String[] REQUIRED_PERMISSIONS = {
+            android.Manifest.permission.CAMERA,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            android.Manifest.permission.READ_EXTERNAL_STORAGE,
+            android.Manifest.permission.READ_MEDIA_IMAGES,
+            android.Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_NETWORK_STATE
+    };
 
     private static final int PICK_IMAGE = 1;
     private DrawerLayout drawerLayout;
@@ -33,6 +51,10 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
+        if(!hasAllPermisions()){
+            requestPermissions();
+        }
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
@@ -125,5 +147,29 @@ public class DashboardActivity extends AppCompatActivity {
                 .setNegativeButton(android.R.string.no, null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+            }
+
+            private void requestPermissions() {
+                ActivityCompat.requestPermissions(this,REQUIRED_PERMISSIONS,PERMISSION_REQUEST_CODE);
+            }
+
+    private boolean hasAllPermisions() {
+        for (String permission : REQUIRED_PERMISSIONS) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
     }
+
+
+    public void onRequestPermissionResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (!hasAllPermisions()) {
+                Toast.makeText(this, "The app cannot function without the required permissions", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
 }
