@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,7 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+
 import com.fsre.carapp.MainActivity;
 import com.fsre.carapp.R;
 import com.fsre.carapp.models.User;
@@ -54,6 +53,8 @@ public class ProfileFragment extends Fragment {
     private FirebaseUser currentUser;
     private final Calendar calendar = Calendar.getInstance();
     private String profileImageUrl;
+    private Button changePasswordButton;
+    private EditText newPasswordEditText;
 
     @Nullable
     @Override
@@ -67,6 +68,9 @@ public class ProfileFragment extends Fragment {
         saveButton = view.findViewById(R.id.saveButton);
         uploadImageButton = view.findViewById(R.id.uploadImageButton);
         deleteAccountButton = view.findViewById(R.id.deleteAccountButton);
+        newPasswordEditText = view.findViewById(R.id.newPasswordEditText);
+        changePasswordButton = view.findViewById(R.id.changePasswordButton);
+
         profileImageView = view.findViewById(R.id.profileImageView);
         accountCreationDateTextView = view.findViewById(R.id.accountCreationDateTextView);
         db = FirebaseFirestore.getInstance();
@@ -74,8 +78,25 @@ public class ProfileFragment extends Fragment {
         currentUser = auth.getCurrentUser();
 
         if (currentUser != null) {
+            emailEditText.setText(currentUser.getEmail());
             fetchUserDetails();
         }
+
+        changePasswordButton.setOnClickListener(v -> {
+            String newPassword = newPasswordEditText.getText().toString();
+            if (newPassword.isEmpty()) {
+                Toast.makeText(getActivity(), "Please enter a new password.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            currentUser.updatePassword(newPassword)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getActivity(), "Password updated successfully.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getActivity(), "Error updating password.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        });
 
         dobEditText.setOnClickListener(v -> {
             new DatePickerDialog(getContext(), date, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
@@ -84,23 +105,31 @@ public class ProfileFragment extends Fragment {
         uploadImageButton.setOnClickListener(v -> openFileChooser());
 
         saveButton.setOnClickListener(v -> {
-            String firstname = firstnameEditText.getText().toString();
-            String lastname = lastnameEditText.getText().toString();
-            String email = emailEditText.getText().toString();
-            String dob = dobEditText.getText().toString();
+            final String firstname = firstnameEditText.getText().toString();
+            final String lastname = lastnameEditText.getText().toString();
+            final String email = currentUser.getEmail();
+            final String dob = dobEditText.getText().toString();
+            final String profileImageUrl = this.profileImageUrl;
 
-            if (firstname.isEmpty() || lastname.isEmpty() || email.isEmpty() || dob.isEmpty()) {
-                Toast.makeText(getActivity(), "Please fill in all fields.", Toast.LENGTH_SHORT).show();
-                return;
-            }
+            db.collection("users").document(currentUser.getUid()).get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            User user = documentSnapshot.toObject(User.class);
+                            if (user != null) {
+                                String updatedFirstname = firstname.isEmpty() ? user.getFirstname() : firstname;
+                                String updatedLastname = lastname.isEmpty() ? user.getLastname() : lastname;
+                                String updatedDob = dob.isEmpty() ? user.getDob() : dob;
+                                String updatedProfileImageUrl = profileImageUrl == null ? user.getProfileImageUrl() : profileImageUrl;
 
-            User user = new User(firstname, lastname, email, dob, profileImageUrl);
-            db.collection("users").document(currentUser.getUid()).set(user)
-                    .addOnSuccessListener(aVoid -> Toast.makeText(getActivity(), "Profile updated successfully.", Toast.LENGTH_SHORT).show())
-                    .addOnFailureListener(e -> Toast.makeText(getActivity(), "Error updating profile.", Toast.LENGTH_SHORT).show());
+                                User updatedUser = new User(updatedFirstname, updatedLastname, email, updatedDob, updatedProfileImageUrl);
+                                db.collection("users").document(currentUser.getUid()).set(updatedUser)
+                                        .addOnSuccessListener(aVoid -> Toast.makeText(getActivity(), "Profile updated successfully.", Toast.LENGTH_SHORT).show())
+                                        .addOnFailureListener(e -> Toast.makeText(getActivity(), "Error updating profile.", Toast.LENGTH_SHORT).show());
+                            }
+                        }
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(getActivity(), "Error fetching user details.", Toast.LENGTH_SHORT).show());
         });
-
-
 
         deleteAccountButton.setOnClickListener(v -> {
             new AlertDialog.Builder(getContext())
@@ -161,7 +190,7 @@ public class ProfileFragment extends Fragment {
     };
 
     private void updateLabel() {
-        String myFormat = "dd/MM/yy"; // In which you need put here
+        String myFormat = "dd/MM/yy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.GERMAN);
         dobEditText.setText(sdf.format(calendar.getTime()));
     }
@@ -190,9 +219,8 @@ public class ProfileFragment extends Fragment {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] data = baos.toByteArray();
-            String base64Image = Base64.encodeToString(data, Base64.DEFAULT);
 
-            profileImageUrl = base64Image;
+            profileImageUrl = Base64.encodeToString(data, Base64.DEFAULT);
             Toast.makeText(getActivity(), "Image uploaded successfully.", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
