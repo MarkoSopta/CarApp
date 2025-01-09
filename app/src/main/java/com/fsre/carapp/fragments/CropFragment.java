@@ -44,6 +44,8 @@ public class CropFragment extends Fragment {
         UCrop.Options options = new UCrop.Options();
         options.setFreeStyleCropEnabled(true); // Allow user to manipulate crop rectangle
         options.setHideBottomControls(false); // Show bottom controls for image manipulation
+        options.setCompressionQuality(80);
+        options.setMaxBitmapSize(1024);
         return options;
     }
 
