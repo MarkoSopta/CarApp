@@ -1,20 +1,28 @@
 package com.fsre.carapp.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class ApiResponse {
-    private String result;
+    @SerializedName("primary_result")
+    private String primaryResult;
 
-    public ApiResponse() {
+    @SerializedName("secondary_result")
+    private SecondaryResult secondaryResult;
+
+    public String getPrimaryResult() {
+        return primaryResult;
     }
 
-    public ApiResponse(String result) {
-        this.result = result;
+    public SecondaryResult getSecondaryResult() {
+        return secondaryResult;
     }
 
-    public String getResult() {
-        return result;
-    }
+    public static class SecondaryResult {
+        @SerializedName("info_link")
+        private String infoLink;
 
-    public void setResult(String result) {
-        this.result = result;
+        public String getInfoLink() {
+            return infoLink;
+        }
     }
 }

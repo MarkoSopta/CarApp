@@ -12,7 +12,7 @@
         android:scaleType="fitCenter" />
 
     <TextView
-        android:id="@+id/resultTextView"
+        android:id="@+id/primaryResultTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center"
@@ -21,6 +21,18 @@
         android:textColor="#FFFFFF"
         android:paddingHorizontal="24dp"
         android:paddingVertical="12dp"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/secondaryResultTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center"
+        android:layout_margin="48dp"
+        android:text="Više informacija"
+        android:textColor="#FFFFFF"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="16dp"
         android:visibility="gone"/>
 
     <LinearLayout

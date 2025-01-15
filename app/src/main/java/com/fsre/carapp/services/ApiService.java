@@ -30,8 +30,8 @@ public class ApiService {
         ConnectionPool connectionPool = new ConnectionPool(5, 5, TimeUnit.MINUTES);
 
         OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .connectionPool(connectionPool)
                 .build();

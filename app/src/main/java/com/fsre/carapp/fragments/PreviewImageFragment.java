@@ -1,8 +1,11 @@
 package com.fsre.carapp.fragments;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +24,6 @@ import com.fsre.carapp.services.ApiService;
 import com.fsre.carapp.services.ImageOrientationService;
 
 import java.io.File;
-import java.io.IOException;
 
 public class PreviewImageFragment extends Fragment {
 
@@ -29,7 +31,7 @@ public class PreviewImageFragment extends Fragment {
 
     private ImageView previewImageView;
     private ImageButton retakeButton, sendButton, chooseFromGalleryButton;
-    private TextView resultTextView;
+    private TextView primaryResultTextView, secondaryResultTextView;
     private Bitmap previewBitmap;
     private File imageFile;
     private ApiService apiService;
@@ -43,7 +45,8 @@ public class PreviewImageFragment extends Fragment {
         retakeButton = view.findViewById(R.id.retakeButton);
         sendButton = view.findViewById(R.id.sendButton);
         chooseFromGalleryButton = view.findViewById(R.id.chooseFromGalleryButton);
-        resultTextView = view.findViewById(R.id.resultTextView);
+        primaryResultTextView = view.findViewById(R.id.primaryResultTextView);
+        secondaryResultTextView = view.findViewById(R.id.secondaryResultTextView);
 
         apiService = new ApiService();
         imageOrientationService = new ImageOrientationService();
@@ -76,18 +79,30 @@ public class PreviewImageFragment extends Fragment {
         apiService.uploadImage(imageFile, new ApiService.ApiCallback() {
             @Override
             public void onSuccess(ApiResponse response) {
-                displayResult(response.getResult());
+                displayResults(response.getPrimaryResult(),response.getSecondaryResult().getInfoLink());
             }
 
             @Override
             public void onFailure(Exception e) {
-                displayResult("Error: " + e.getMessage());
+                displayResults("Error: " + e.getMessage(),"Error: " + e.getMessage());
             }
         });
     }
 
-    private void displayResult(String result) {
-        resultTextView.setText(result);
-        resultTextView.setVisibility(View.VISIBLE);
+    private void displayResults(String primaryResult, String secondaryResult) {
+        primaryResultTextView.setText(primaryResult);
+        primaryResultTextView.setVisibility(View.VISIBLE);
+
+        if (!primaryResult.equals("No car detected")) {
+            secondaryResultTextView.setText("Više informacija");
+            secondaryResultTextView.setVisibility(View.VISIBLE);
+
+            secondaryResultTextView.setOnClickListener(v -> {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(secondaryResult));
+                startActivity(browserIntent);
+            });
+        } else {
+            secondaryResultTextView.setVisibility(View.GONE);
+        }
     }
 }
