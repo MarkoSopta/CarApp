@@ -1,6 +1,8 @@
 package com.fsre.carapp.fragments;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +14,8 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.fsre.carapp.R;
@@ -20,6 +24,7 @@ import com.fsre.carapp.services.ImageOrientationService;
 public class GalleryFragment extends Fragment {
 
     private static final int PICK_IMAGE = 1;
+    private static final int REQUEST_CODE_PERMISSIONS = 101;
     private Button chooseImageButton;
     private ImageOrientationService imageOrientationService;
     private Uri imageUri;
@@ -31,9 +36,40 @@ public class GalleryFragment extends Fragment {
         chooseImageButton = view.findViewById(R.id.chooseImageButton);
         imageOrientationService = new ImageOrientationService();
 
-        chooseImageButton.setOnClickListener(v -> openGallery());
+        chooseImageButton.setOnClickListener(v -> {
+            if (hasPermissions()) {
+                openGallery();
+            } else {
+                requestPermissions();
+            }
+        });
 
         return view;
+    }
+
+    private boolean hasPermissions() {
+        int readPermission = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
+        int writePermission = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        return readPermission == PackageManager.PERMISSION_GRANTED && writePermission == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermissions() {
+        requestPermissions(
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                REQUEST_CODE_PERMISSIONS
+        );
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openGallery();
+            } else {
+                // Permissions denied, show a message to the user
+            }
+        }
     }
 
     private void openGallery() {
