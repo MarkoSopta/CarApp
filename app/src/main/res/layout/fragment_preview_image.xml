@@ -8,11 +8,11 @@
         android:id="@+id/previewImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#4A5E65"
+        android:background="#1E4061"
         android:scaleType="fitCenter" />
 
     <TextView
-        android:id="@+id/resultTextView"
+        android:id="@+id/primaryResultTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center"
@@ -23,11 +23,30 @@
         android:paddingVertical="12dp"
         android:visibility="gone"/>
 
+    <Button
+        android:id="@+id/secondaryResultTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center"
+        android:layout_margin="48dp"
+        android:text="Više informacija"
+        android:textColor="#FFFFFF"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="16dp"
+        android:visibility="gone"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="#1B1B21"
+        android:background="#010C1D"
         android:elevation="4dp"
         android:gravity="center"
         android:orientation="horizontal"
@@ -42,7 +61,6 @@
             android:contentDescription="Reupload"
             android:padding="12dp"
             android:src="@drawable/ic_gallery" />
-
 
         <ImageButton
             android:id="@+id/sendButton"
@@ -64,6 +82,16 @@
             android:padding="12dp"
             android:src="@drawable/ic_camera" />
 
+        <!--
+<ImageButton
+    android:id="@+id/goToDashboardButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="@drawable/ripple_button"
+    android:contentDescription="Go to Dashboard"
+    android:padding="12dp" />
+-->
 
     </LinearLayout>
 </FrameLayout>
