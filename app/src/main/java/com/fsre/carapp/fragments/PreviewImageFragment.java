@@ -31,14 +31,13 @@ public class PreviewImageFragment extends Fragment {
     private static final String TAG = "PreviewImageFragment";
 
     private ImageView previewImageView;
-<<<<<<< HEAD
+
     private ImageButton retakeButton, sendButton, chooseFromGalleryButton;
     private TextView primaryResultTextView, secondaryResultTextView;
-=======
-    private ImageButton retakeButton, sendButton, chooseFromGalleryButton, goToDashboardButton;
-    private TextView primaryResultTextView, secondaryResultTextView;
+
+
     private ProgressBar progressBar;
->>>>>>> e702f30a6048b4c7370ca3ea9bd7c4528375d491
+
     private Bitmap previewBitmap;
     private File imageFile;
     private ApiService apiService;
@@ -52,11 +51,10 @@ public class PreviewImageFragment extends Fragment {
         retakeButton = view.findViewById(R.id.retakeButton);
         sendButton = view.findViewById(R.id.sendButton);
         chooseFromGalleryButton = view.findViewById(R.id.chooseFromGalleryButton);
-<<<<<<< HEAD
-=======
+
         progressBar = view.findViewById(R.id.progressBar);
 
->>>>>>> e702f30a6048b4c7370ca3ea9bd7c4528375d491
+
         primaryResultTextView = view.findViewById(R.id.primaryResultTextView);
         secondaryResultTextView = view.findViewById(R.id.secondaryResultTextView);
 
@@ -95,22 +93,20 @@ public class PreviewImageFragment extends Fragment {
         apiService.uploadImage(imageFile, new ApiService.ApiCallback() {
             @Override
             public void onSuccess(ApiResponse response) {
-<<<<<<< HEAD
+
                 displayResults(response.getPrimaryResult(),response.getSecondaryResult().getInfoLink());
-=======
+
                 progressBar.setVisibility(View.GONE);
                 displayResults(response.getPrimaryResult(), response.getSecondaryResult().getInfoLink());
->>>>>>> e702f30a6048b4c7370ca3ea9bd7c4528375d491
             }
 
             @Override
             public void onFailure(Exception e) {
-<<<<<<< HEAD
+
                 displayResults("Error: " + e.getMessage(),"Error: " + e.getMessage());
-=======
+
                 progressBar.setVisibility(View.GONE);
                 displayResults("Error: " + e.getMessage(), "Error: " + e.getMessage());
->>>>>>> e702f30a6048b4c7370ca3ea9bd7c4528375d491
             }
         });
     }
