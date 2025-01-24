@@ -82,24 +82,23 @@
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="@color/primary_text_color"
+                    android:paddingTop="16dp"
                     android:paddingBottom="8dp" />
-
-                <!-- Placeholder for Recent Uploads -->
-                <LinearLayout
+                <HorizontalScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingBottom="16dp">
+                    android:paddingBottom="16dp"
+                    android:layout_margin="8dp">
 
-                    <TextView
-                        android:layout_width="match_parent"
+                    <GridLayout
+                        android:id="@+id/recentImagesLayout"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="No recent uploads"
-                        android:textSize="16sp"
-                        android:gravity="center"
-                        android:textColor="@color/secondary_text_color"
-                        android:padding="8dp" />
-                </LinearLayout>
+                        android:columnCount="3"
+                        android:rowCount="2"
+                        android:orientation="horizontal">
+                    </GridLayout>
+                </HorizontalScrollView>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>

@@ -1,4 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!-- res/menu/image_options_menu.xml -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <item
+        android:id="@+id/delete_image"
+        android:title="Delete" />
+    <item
+        android:id="@+id/crop_image"
+        android:title="Crop" />
 </menu>
