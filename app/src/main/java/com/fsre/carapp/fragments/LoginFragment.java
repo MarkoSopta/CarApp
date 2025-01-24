@@ -7,8 +7,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,10 +35,32 @@ public class LoginFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
+        ImageView logoImageView = view.findViewById(R.id.logoImageView);
+        TextView welcomeTextView = view.findViewById(R.id.welcomeTextView);
         emailEditText = view.findViewById(R.id.emailEditText);
         passwordEditText = view.findViewById(R.id.passwordEditText);
         loginButton = view.findViewById(R.id.loginButton);
+
+        TextView registerText = view.findViewById(R.id.registerText);
         auth = FirebaseAuth.getInstance();
+
+        Animation fadeInAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
+
+        logoImageView.startAnimation(fadeInAnimation);
+
+        fadeInAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
+        fadeInAnimation.setStartOffset(500);
+        welcomeTextView.startAnimation(fadeInAnimation);
+
+        fadeInAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
+        fadeInAnimation.setStartOffset(1000);
+        emailEditText.startAnimation(fadeInAnimation);
+        passwordEditText.startAnimation(fadeInAnimation);
+
+        fadeInAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
+        fadeInAnimation.setStartOffset(1500);
+        loginButton.startAnimation(fadeInAnimation);
+        registerText.startAnimation(fadeInAnimation);
 
         loginButton.setOnClickListener(v -> {
             String email = emailEditText.getText().toString();

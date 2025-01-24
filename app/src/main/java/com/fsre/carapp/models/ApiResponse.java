@@ -6,12 +6,20 @@ public class ApiResponse {
     @SerializedName("primary_result")
     private String primaryResult;
 
+
     @SerializedName("secondary_result")
     private SecondaryResult secondaryResult;
+
+
+
 
     public String getPrimaryResult() {
         return primaryResult;
     }
+
+
+
+
 
     public SecondaryResult getSecondaryResult() {
         return secondaryResult;

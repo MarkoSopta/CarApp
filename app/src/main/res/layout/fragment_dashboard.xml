@@ -1,33 +1,112 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:padding="16dp">
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/uploadImageButton"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="Upload an Image"
-            android:background="@drawable/ripple_button"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp" />
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/purple_button_color"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:navigationIcon="@drawable/swipe"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"
+            android:layout_marginStart="-16dp" />
 
-        <Button
-            android:id="@+id/captureButton"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="Capture an Image"
-            android:background="@drawable/ripple_button"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp" />
+            android:layout_height="match_parent"
+            android:background="@drawable/background_image">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Welcome Message -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Welcome to CarApp!"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textColor="@color/primary_text_color"
+                    android:paddingBottom="16dp" />
+
+                <!-- Instructions -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Use the buttons below to upload or capture an image of a car. Our AI will help you identify the car model."
+                    android:textSize="16sp"
+                    android:textColor="@color/secondary_text_color"
+                    android:paddingBottom="16dp" />
+
+                <!-- Upload and Capture Buttons -->
+                <Button
+                    android:id="@+id/uploadImageButton"
+                    style="@style/ButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_background"
+                    android:textColor="@color/button_text_color"
+                    android:textStyle="bold"
+                    android:text="Upload an Image"
+                    android:layout_marginBottom="16dp" />
+
+                <Button
+                    android:id="@+id/captureButton"
+                    style="@style/ButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_background"
+                    android:textColor="@color/button_text_color"
+                    android:textStyle="bold"
+                    android:text="Capture an Image"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Recent Uploads Section -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Recent Uploads"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary_text_color"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="8dp" />
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="16dp"
+                    android:layout_margin="8dp">
+
+                    <GridLayout
+                        android:id="@+id/recentImagesLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:columnCount="3"
+                        android:rowCount="2"
+                        android:orientation="horizontal">
+                    </GridLayout>
+                </HorizontalScrollView>
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
-</FrameLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:menu="@menu/drawer_menu"/>
+</androidx.drawerlayout.widget.DrawerLayout>

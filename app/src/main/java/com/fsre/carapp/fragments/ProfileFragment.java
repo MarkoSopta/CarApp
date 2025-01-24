@@ -136,21 +136,24 @@ public class ProfileFragment extends Fragment {
                     .setTitle("Delete Account")
                     .setMessage("Are you sure you want to delete your account?")
                     .setPositiveButton("Yes", (dialog, which) -> {
-                        currentUser.delete()
-                                .addOnCompleteListener(task -> {
-                                    if (task.isSuccessful()) {
-                                        db.collection("users").document(currentUser.getUid()).delete()
-                                                .addOnSuccessListener(aVoid -> {
-                                                    Toast.makeText(getActivity(), "Account deleted successfully.", Toast.LENGTH_SHORT).show();
-                                                    Intent intent = new Intent(getActivity(), MainActivity.class);
-                                                    startActivity(intent);
-                                                    getActivity().finish();
-                                                })
-                                                .addOnFailureListener(e -> Toast.makeText(getActivity(), "Error deleting account.", Toast.LENGTH_SHORT).show());
-                                    } else {
-                                        Toast.makeText(getActivity(), "Error deleting account.", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                        if (currentUser != null) {
+                            String userId = currentUser.getUid();
+                            db.collection("users").document(userId).delete()
+                                    .addOnSuccessListener(aVoid -> {
+                                        currentUser.delete()
+                                                .addOnCompleteListener(task -> {
+                                                    if (task.isSuccessful()) {
+                                                        Toast.makeText(getActivity(), "Account deleted successfully.", Toast.LENGTH_SHORT).show();
+                                                        Intent intent = new Intent(getActivity(), MainActivity.class);
+                                                        startActivity(intent);
+                                                        getActivity().finish();
+                                                    } else {
+                                                        Toast.makeText(getActivity(), "Error deleting account.", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                    })
+                                    .addOnFailureListener(e -> Toast.makeText(getActivity(), "Error deleting user data.", Toast.LENGTH_SHORT).show());
+                        }
                     })
                     .setNegativeButton("No", null)
                     .show();
@@ -159,6 +162,8 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
+
+    private boolean isAccountCreationDateSet = false;
     private void fetchUserDetails() {
         db.collection("users").document(currentUser.getUid()).get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -169,7 +174,11 @@ public class ProfileFragment extends Fragment {
                             lastnameEditText.setText(user.getLastname());
                             emailEditText.setText(user.getEmail());
                             dobEditText.setText(user.getDob());
-                            accountCreationDateTextView.setText("Account Creation Date: " + user.getDate().toString());
+
+                            if (!isAccountCreationDateSet) {
+                                accountCreationDateTextView.setText("Account Creation Date: " + user.getDate().toString());
+                                isAccountCreationDateSet = true;
+                            }
 
                             if (user.getProfileImageUrl() != null) {
                                 byte[] decodedString = Base64.decode(user.getProfileImageUrl(), Base64.DEFAULT);

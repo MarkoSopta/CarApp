@@ -1,81 +1,126 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#4F4F4F"
-    android:orientation="vertical"
+    android:background="@drawable/background_image"
     android:padding="16dp">
 
-    <ImageView
-        android:id="@+id/profileImageView"
-        android:layout_width="256dp"
-        android:layout_height="256dp"
-        android:layout_gravity="center"
-        android:src="@drawable/ic_launcher_background" />
-
-    <Button
-        android:id="@+id/uploadImageButton"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Upload Profile Picture" />
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/firstnameEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="First Name" />
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/profileImageView"
+            android:layout_width="256dp"
+            android:layout_height="256dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/ic_launcher_background"
+            app:shapeAppearanceOverlay="@style/CircleImageView" />
 
-    <EditText
-        android:id="@+id/lastnameEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Last Name" />
+        <Button
+            android:id="@+id/uploadImageButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Upload Profile Picture"
+            android:background="@color/button_color"
+            android:textColor="@color/button_text_color"
+            android:layout_marginBottom="16dp" />
 
-    <EditText
-        android:id="@+id/emailEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        android:hint="Email"
-        android:inputType="textEmailAddress" />
+        <EditText
+            android:id="@+id/firstnameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="First Name"
+            android:background="@drawable/edit_text_background"
+            android:textColor="@color/text_color"
+            android:textColorHint="@color/hint_color"
+            android:padding="8dp"
+            android:layout_marginBottom="8dp" />
 
-    <EditText
-        android:id="@+id/dobEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="false"
-        android:hint="Date of Birth" />
+        <EditText
+            android:id="@+id/lastnameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Last Name"
+            android:background="@drawable/edit_text_background"
+            android:textColor="@color/text_color"
+            android:textColorHint="@color/hint_color"
+            android:padding="8dp"
+            android:layout_marginBottom="8dp" />
 
-    <EditText
-        android:id="@+id/newPasswordEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="New Password"
-        android:inputType="textPassword" />
+        <EditText
+            android:id="@+id/emailEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:background="@drawable/edit_text_background"
+            android:textColor="@color/text_color"
+            android:textColorHint="@color/hint_color"
+            android:padding="8dp"
+            android:layout_marginBottom="8dp" />
 
-    <Button
-        android:id="@+id/changePasswordButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Change Password" />
+        <EditText
+            android:id="@+id/dobEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="false"
+            android:hint="Date of Birth"
+            android:background="@drawable/edit_text_background"
+            android:textColor="@color/text_color"
+            android:textColorHint="@color/hint_color"
+            android:padding="8dp"
+            android:layout_marginBottom="8dp" />
 
+        <EditText
+            android:id="@+id/newPasswordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="New Password"
+            android:inputType="textPassword"
+            android:background="@drawable/edit_text_background"
+            android:textColor="@color/text_color"
+            android:textColorHint="@color/hint_color"
+            android:padding="8dp"
+            android:layout_marginBottom="8dp" />
 
-    <Button
-        android:id="@+id/saveButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Save" />
+        <Button
+            android:id="@+id/changePasswordButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Change Password"
+            android:background="@color/button_color"
+            android:textColor="@color/button_text_color"
+            android:layout_marginBottom="8dp" />
 
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:background="@color/button_color"
+            android:textColor="@color/button_text_color"
+            android:layout_marginBottom="8dp" />
 
-    <Button
-        android:id="@+id/deleteAccountButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Delete Account" />
+        <Button
+            android:id="@+id/deleteAccountButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete Account"
+            android:background="@color/button_color"
+            android:textColor="@color/button_text_color"
+            android:layout_marginBottom="8dp" />
 
-    <TextView
-        android:id="@+id/accountCreationDateTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Account Creation Date: " />
-</LinearLayout>
+        <TextView
+            android:id="@+id/accountCreationDateTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Account Creation Date: "
+            android:textColor="@color/background_color"
+            android:padding="8dp" />
+    </LinearLayout>
+</ScrollView>

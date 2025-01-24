@@ -7,4 +7,22 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="background_color">#FFFFFF</color>
+    <color name="text_color">#000000</color>
+    <color name="hint_color">#888888</color>
+    <color name="edit_text_background_color">#FFFFFF</color>
+    <color name="edit_text_stroke_color">#CCCCCC</color>
+    <color name="button_color">#4B317E</color>
+    <color name="button_pressed_color">#3700B3</color>
+    <color name="button_text_color">#FFFFFF</color>
+    <color name="link_color">#1E88E5</color>
+    <color name="tab_text_color">#000000</color>
+    <color name="tab_selected_text_color">#FFFFFF</color>
+    <color name="tab_indicator_color">#FF6200EE</color>
+    <color name="primary_text_color">#1B1B21</color>
+    <color name="secondary_text_color">#4A5E65</color>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="purple_button_color">#6200EE</color> <!-- Replace with your desired color code -->
 </resources>
