@@ -20,15 +20,5 @@ public class MainActivity extends AppCompatActivity {
         FragmentPagerAdapter adapter = new FragmentPagerAdapter(this);
         viewPager.setAdapter(adapter);
 
-        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
-            switch (position) {
-                case 0:
-                    tab.setText("Login");
-                    break;
-                case 1:
-                    tab.setText("Register");
-                    break;
-            }
-        }).attach();
     }
 }

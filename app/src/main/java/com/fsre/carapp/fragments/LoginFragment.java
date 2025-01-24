@@ -40,7 +40,7 @@ public class LoginFragment extends Fragment {
         emailEditText = view.findViewById(R.id.emailEditText);
         passwordEditText = view.findViewById(R.id.passwordEditText);
         loginButton = view.findViewById(R.id.loginButton);
-        TextView forgotPasswordText = view.findViewById(R.id.forgotPasswordText);
+
         TextView registerText = view.findViewById(R.id.registerText);
         auth = FirebaseAuth.getInstance();
 
@@ -49,18 +49,17 @@ public class LoginFragment extends Fragment {
         logoImageView.startAnimation(fadeInAnimation);
 
         fadeInAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
-        fadeInAnimation.setStartOffset(1000);
+        fadeInAnimation.setStartOffset(500);
         welcomeTextView.startAnimation(fadeInAnimation);
 
         fadeInAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
-        fadeInAnimation.setStartOffset(2000);
+        fadeInAnimation.setStartOffset(1000);
         emailEditText.startAnimation(fadeInAnimation);
         passwordEditText.startAnimation(fadeInAnimation);
 
         fadeInAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
-        fadeInAnimation.setStartOffset(3000);
+        fadeInAnimation.setStartOffset(1500);
         loginButton.startAnimation(fadeInAnimation);
-        forgotPasswordText.startAnimation(fadeInAnimation);
         registerText.startAnimation(fadeInAnimation);
 
         loginButton.setOnClickListener(v -> {
