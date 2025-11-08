@@ -1,15 +1,66 @@
+# Android / IntelliJ
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+.idea/
+.idea/**/workspace.xml
+*.hprof
+
+# Gradle
+.gradle/
+build/
+**/build/
 local.properties
+/.gradle
+!gradle/wrapper/gradle-wrapper.jar
+
+# Android build outputs
+*.apk
+*.ap_
+*.aab
+*.aar
+*.dex
+*.class
+
+# Kotlin
+*.kotlin_module
+
+# Native / NDK
+.externalNativeBuild/
+.cxx/
+obj/
+*.so
+
+# Keystore and signing
+*.jks
+*.keystore
+debug.keystore
+
+# Logs and miscellaneous
+*.log
+captures/
+crashlytics.properties
+
+# Google services (optional - often kept out of repo)
+google-services.json
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# JetBrains / Android Studio caches and settings
+out/
+.idea/
+*.iml
+workspace.xml
+tasks.xml
+gradle.xml
+library.xml
+
+# Coverage / reports
+coverage/
+*.lcov
+reports/
+
+# Temporary files
+*.tmp
+*.swp
