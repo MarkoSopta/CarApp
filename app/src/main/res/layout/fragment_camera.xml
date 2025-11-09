@@ -1,7 +1,8 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#0D0221">
 
     <androidx.camera.view.PreviewView
         android:id="@+id/previewView"
@@ -14,5 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         android:layout_margin="16dp"
-        android:text="Capture"/>
+        android:text="Capture"
+        android:textColor="#0D0221"
+        android:backgroundTint="#01FF70"/>
 </FrameLayout>

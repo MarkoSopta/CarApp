@@ -2,7 +2,6 @@ package com.fsre.carapp.fragments;
 
 import static android.content.ContentValues.TAG;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,7 +30,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.fsre.carapp.R;
-import com.fsre.carapp.services.ImageOrientationService;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.io.File;
@@ -50,7 +48,6 @@ public class CameraFragment extends Fragment {
     private File tempImageFile;
     private ExecutorService executorService;
     private ProcessCameraProvider cameraProvider;
-    private ImageOrientationService imageOrientationService;
 
     @Nullable
     @Override
@@ -70,7 +67,6 @@ public class CameraFragment extends Fragment {
         });
 
         executorService = Executors.newSingleThreadExecutor();
-        imageOrientationService = new ImageOrientationService();
 
         startCamera();
 
@@ -114,13 +110,9 @@ public class CameraFragment extends Fragment {
         imageCapture.takePicture(outputFileOptions, executorService, new ImageCapture.OnImageSavedCallback() {
             @Override
             public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                File correctedImageFile = imageOrientationService.correctImageOrientation(tempImageFile);
-                if (correctedImageFile != null) {
-                    Uri imageUri = Uri.fromFile(correctedImageFile);
-                    navigateToCropFragment(imageUri);
-                } else {
-                    Log.e(TAG, "Failed to correct image orientation");
-                }
+                // Glide will handle orientation automatically, no correction needed
+                Uri imageUri = Uri.fromFile(tempImageFile);
+                navigateToCropFragment(imageUri);
             }
 
             @Override

@@ -1,7 +1,6 @@
 plugins {
     id("com.android.application")
-    id("com.google.gms.google-services")
-}
+    }
 
 android {
     namespace = "com.fsre.carapp"
@@ -57,8 +56,6 @@ dependencies {
     implementation ("com.squareup.okhttp3:okhttp:4.9.0")
     implementation("com.vanniktech:android-image-cropper:4.6.0")
     implementation("com.google.android.engage:engage-core:1.5.5")
-    implementation("com.google.firebase:firebase-auth:23.1.0")
-    implementation("com.google.firebase:firebase-firestore:25.1.1")
     implementation ("com.github.yalantis:ucrop:2.2.9-native")
     implementation("com.google.android.material:material:1.9.0")
 
@@ -67,5 +64,4 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-    implementation("com.google.android.material:material:1.12.0")
-}
+   }

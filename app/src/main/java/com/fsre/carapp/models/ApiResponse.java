@@ -6,23 +6,21 @@ public class ApiResponse {
     @SerializedName("primary_result")
     private String primaryResult;
 
-
     @SerializedName("secondary_result")
     private SecondaryResult secondaryResult;
 
-
-
-
+    // Add getters with null safety
     public String getPrimaryResult() {
-        return primaryResult;
+        return primaryResult != null ? primaryResult : "No result";
     }
 
-
-
-
-
     public SecondaryResult getSecondaryResult() {
-        return secondaryResult;
+        return secondaryResult != null ? secondaryResult : new SecondaryResult();
+    }
+
+    // Add validation method
+    public boolean isValid() {
+        return primaryResult != null && !primaryResult.isEmpty();
     }
 
     public static class SecondaryResult {
@@ -31,6 +29,10 @@ public class ApiResponse {
 
         public String getInfoLink() {
             return infoLink;
+        }
+
+        public boolean hasInfoLink() {
+            return infoLink != null && !infoLink.isEmpty();
         }
     }
 }

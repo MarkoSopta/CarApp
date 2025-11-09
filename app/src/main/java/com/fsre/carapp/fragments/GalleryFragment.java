@@ -14,19 +14,16 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.fsre.carapp.R;
-import com.fsre.carapp.services.ImageOrientationService;
 
 public class GalleryFragment extends Fragment {
 
     private static final int PICK_IMAGE = 1;
     private static final int REQUEST_CODE_PERMISSIONS = 101;
     private Button chooseImageButton;
-    private ImageOrientationService imageOrientationService;
     private Uri imageUri;
 
     @Nullable
@@ -34,7 +31,6 @@ public class GalleryFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gallery, container, false);
         chooseImageButton = view.findViewById(R.id.chooseImageButton);
-        imageOrientationService = new ImageOrientationService();
 
         chooseImageButton.setOnClickListener(v -> {
             if (hasPermissions()) {
@@ -66,8 +62,6 @@ public class GalleryFragment extends Fragment {
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openGallery();
-            } else {
-                // Permissions denied, show a message to the user
             }
         }
     }
@@ -103,6 +97,8 @@ public class GalleryFragment extends Fragment {
         Cursor cursor = getActivity().getContentResolver().query(contentUri, proj, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
-        return cursor.getString(column_index);
+        String path = cursor.getString(column_index);
+        cursor.close();
+        return path;
     }
 }

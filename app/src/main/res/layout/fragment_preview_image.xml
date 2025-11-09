@@ -1,14 +1,15 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5">
+    android:background="#0D0221">
 
     <ImageView
         android:id="@+id/previewImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#1E4061"
+        android:background="#0D0221"
         android:scaleType="fitCenter" />
 
     <TextView
@@ -18,9 +19,12 @@
         android:layout_gravity="top|center"
         android:layout_margin="16dp"
         android:text="Result"
-        android:textColor="#FFFFFF"
+        android:textColor="#01FF70"
+        android:textSize="20sp"
+        android:textStyle="bold"
         android:paddingHorizontal="24dp"
         android:paddingVertical="12dp"
+        android:background="#0D0221"
         android:visibility="gone"/>
 
     <Button
@@ -28,71 +32,114 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center"
-        android:layout_margin="48dp"
+        android:layout_marginTop="90dp"
         android:text="Više informacija"
-        android:textColor="#FFFFFF"
+        android:textColor="#01FF70"
+        android:backgroundTint="#0D0221"
         android:paddingHorizontal="16dp"
         android:paddingVertical="16dp"
         android:visibility="gone"/>
-
 
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="center"
+        android:indeterminateTint="#01FF70"
         android:visibility="gone"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="#010C1D"
+        android:background="#0D0221"
         android:elevation="4dp"
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="16dp">
 
-        <ImageButton
-            android:id="@+id/chooseFromGalleryButton"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/galleryButtonLayout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:background="@drawable/ripple_button"
-            android:contentDescription="Reupload"
-            android:padding="12dp"
-            android:src="@drawable/ic_gallery" />
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
 
-        <ImageButton
-            android:id="@+id/sendButton"
-            android:layout_width="wrap_content"
+            <ImageButton
+                android:id="@+id/chooseFromGalleryButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/ripple_button"
+                android:contentDescription="Gallery"
+                android:padding="12dp"
+                android:backgroundTint="#6B2E98"
+                app:tint="#01FF70"
+                android:src="@drawable/ic_gallery" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#01FF70"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/identifyButtonLayout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:background="@drawable/ripple_button"
-            android:contentDescription="Identify"
-            android:padding="12dp"
-            android:src="@drawable/ic_identify" />
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
 
-        <ImageButton
-            android:id="@+id/retakeButton"
-            android:layout_width="wrap_content"
+            <ImageButton
+                android:id="@+id/sendButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/ripple_button"
+                android:backgroundTint="#6B2E98"
+                android:contentDescription="Identify"
+                android:padding="12dp"
+                app:tint="#01FF70"
+                android:src="@drawable/ic_identify" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#01FF70"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/retakeButtonLayout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:background="@drawable/ripple_button"
-            android:contentDescription="Retake"
-            android:padding="12dp"
-            android:src="@drawable/ic_camera" />
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
 
-        <!--
-<ImageButton
-    android:id="@+id/goToDashboardButton"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:background="@drawable/ripple_button"
-    android:contentDescription="Go to Dashboard"
-    android:padding="12dp" />
--->
+            <ImageButton
+                android:id="@+id/retakeButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:backgroundTint="#6B2E98"
+                android:background="@drawable/ripple_button"
+                android:contentDescription="Retake"
+                android:padding="12dp"
+                app:tint="#01FF70"
+                android:src="@drawable/ic_camera" />
 
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#01FF70"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+
+
+</LinearLayout>
 </FrameLayout>
